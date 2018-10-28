@@ -25,14 +25,22 @@ class App extends Component {
     super(props);
 
     this.state = {
-      list: list,
+      list,
     };
+
+    this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  onDismiss(id) {
+    const isNotId = item => item.objectID !== id;
+    const updatedList = this.state.list.filter(isNotId);
+    this.setState({ list: updatedList });
   }
 
   render() {
     return (
       <div className="App">
-        {this.state.list.map(function(item) {
+        {this.state.list.map(item => {  // 这里要用箭头函数，否则，button 中的 this 会是 undefined
           return (
             <div key={item.objectID}>
               <span>
@@ -41,6 +49,14 @@ class App extends Component {
               <span>{item.author}</span>
               <span>{item.num_comments}</span>
               <span>{item.points}</span>
+              <span>
+                <button
+                  onClick={() => this.onDismiss(item.objectID)}
+                  item="button"
+                >
+                  Dismiss
+                </button>
+              </span>
             </div>
           );
         })}
