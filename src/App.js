@@ -49,13 +49,15 @@ class App extends Component {
   render() {
     const { searchTerm, list } = this.state;
     return (
-      <div className="App">
-        <Search
-          value={searchTerm}
-          onChange={this.onSearchChange}
-        >
-          Search
-        </Search>
+      <div className="page">
+        <div className="internations">
+          <Search
+            value={searchTerm}
+            onChange={this.onSearchChange}
+          >
+            Search
+          </Search>
+        </div>
         <Table
           list={list}
           pattern={searchTerm}
@@ -76,9 +78,9 @@ const Search = ({ value, onChange, children }) =>
   </form>
 
 const Table = ({ list, pattern, onDismiss }) =>
-  <div>
+  <div className="table">
     {list.filter(isSearched(pattern)).map(item =>
-      <div key={item.objectID}>
+      <div key={item.objectID} className="table-row">
         <span>
           <a href={item.url}>{item.title}</a>
         </span>
@@ -88,6 +90,7 @@ const Table = ({ list, pattern, onDismiss }) =>
         <span>
           <Button
             onClick={() => onDismiss(item.objectID)}
+            className="button-inline"
           >
             Dismiss
           </Button>
