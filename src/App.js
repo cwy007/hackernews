@@ -47,6 +47,7 @@ class App extends Component {
   }
 
   render() {
+    const { searchTerm, list } = this.state;
     return (
       <div className="App">
         <form>
@@ -56,7 +57,7 @@ class App extends Component {
           />
         </form>
         {/* 这里要用箭头函数，否则，button 中的 this 会是 undefined */}
-        {this.state.list.filter(isSearched(this.state.searchTerm)).map(item => {
+        {list.filter(isSearched(searchTerm)).map(item => {
           return (
             <div key={item.objectID}>
               <span>
