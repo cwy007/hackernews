@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import './App.css';
 
 const DEFAULT_QUERY = 'redux';
-const DEFAULT_HPP = '100';
+const DEFAULT_HPP = '100';      // HPP: hits per page
 
 const PATH_BASE = 'https://hn.algolia.com/api/v1';
 const PATH_SEARCH = '/search';
@@ -16,9 +16,9 @@ class App extends Component {
 
     this.state = {
       results: null,
-      searchKey: '',
-      searchTerm: DEFAULT_QUERY,
-      error: null,
+      searchKey: '',              // 稳定的变量
+      searchTerm: DEFAULT_QUERY,  // 动态的搜索词
+      error: null,                // 错误只是 react 一个状态 state
     };
 
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
@@ -27,6 +27,12 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+  }
+
+  componentDidMount() {
+    const { searchTerm } = this.state;
+    this.setState({ searchKey: searchTerm });
+    this.fetchSearchTopStories(searchTerm);
   }
 
   needsToSearchTopStories(searchTerm) {
@@ -63,12 +69,6 @@ class App extends Component {
       .catch(e => this.setState({ error: e }));
   }
 
-  componentDidMount() {
-    const { searchTerm } = this.state;
-    this.setState({ searchKey: searchTerm });
-    this.fetchSearchTopStories(searchTerm);
-  }
-
   onSearchChange(event) {
     this.setState({ searchTerm: event.target.value });
   }
@@ -101,7 +101,7 @@ class App extends Component {
 
   render() {
     const {
-      searchTerm,
+      searchTerm,     // 多行是为了代码的可读性
       results,
       searchKey,
       error
