@@ -276,6 +276,12 @@ Table.propTypes = {
 const Loading = () =>
   <div>Loading ...</div>
 
+function withFoo(Component) {
+  return function(props) {
+    return <Component { ...props } />;
+  }
+}
+
 export default App;
 
 export {
