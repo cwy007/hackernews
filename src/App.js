@@ -276,8 +276,10 @@ Table.propTypes = {
 const Loading = () =>
   <div>Loading ...</div>
 
-const withFoo = (Component) => (props) =>
-  <Component { ...props } />
+const withLoading = (Component) => (props) =>
+  props.isLoading
+    ? <Loading />
+    : <Component { ...props } />
 
 export default App;
 
