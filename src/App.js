@@ -276,10 +276,10 @@ Table.propTypes = {
 const Loading = () =>
   <div>Loading ...</div>
 
-const withLoading = (Component) => (props) =>
-  props.isLoading
+const withLoading = (Component) => ({ isLoading, ...rest }) =>
+  isLoading
     ? <Loading />
-    : <Component { ...props } />
+    : <Component { ...rest } />
 
 export default App;
 
