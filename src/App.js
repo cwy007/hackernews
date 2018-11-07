@@ -20,6 +20,7 @@ class App extends Component {
       searchKey: '',              // 稳定的变量
       searchTerm: DEFAULT_QUERY,  // 动态的搜索词
       error: null,                // 错误只是 react 一个状态 state
+      isLoading: false,
     };
 
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
@@ -57,12 +58,14 @@ class App extends Component {
       results: {
         ...results,
         [searchKey]: { hits: updatedHits, page }
-      }
+      },
+      isLoading: false
     });
     console.log(this.state);
   }
 
   fetchSearchTopStories(searchTerm, page = 0) {
+    this.setState({ isLoading: true });
     fetch(`${PATH_BASE}${PATH_SEARCH}?${PARAM_SEARCH}${searchTerm}&${PARAM_PAGE
       }${page}&${PARAM_HPP}${DEFAULT_HPP}`)
       .then(response => response.json())
@@ -105,7 +108,8 @@ class App extends Component {
       searchTerm,     // 多行是为了代码的可读性
       results,
       searchKey,
-      error
+      error,
+      isLoading
     } = this.state;
 
     const page = (
@@ -140,9 +144,12 @@ class App extends Component {
           />
         }
         <div className="interactions">
-          <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
-            More
-          </Button>
+          { isLoading
+            ? <Loading />
+            : <Button onClick={() => this.fetchSearchTopStories(searchKey, page + 1)}>
+              More
+            </Button>
+          }
         </div>
       </div>
     );
@@ -265,6 +272,9 @@ Table.propTypes = {
   ).isRequired,
   onDismiss: PropTypes.func.isRequired,
 };
+
+const Loading = () =>
+  <div>Loading ...</div>
 
 export default App;
 
