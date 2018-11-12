@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import { sortBy } from 'lodash';
 import PropTypes from 'prop-types';
 import './App.css';
 
@@ -10,6 +11,13 @@ const PATH_SEARCH = '/search';
 const PARAM_SEARCH = 'query=';
 const PARAM_PAGE = 'page=';
 const PARAM_HPP = 'hitsPerPage=';
+const SORTS = {
+  NONE: list => list,
+  TITLE: list => sortBy(list, 'title'),
+  AUTHOR: list => sortBy(list, 'author'),
+  COMMENTS: list => sortBy(list, 'num_comments').reverse(),
+  POINTS: list => sortBy(list, 'points').reverse(),
+};
 
 class App extends Component {
   constructor(props) {
@@ -21,6 +29,7 @@ class App extends Component {
       searchTerm: DEFAULT_QUERY,  // 动态的搜索词
       error: null,                // 错误只是 react 一个状态 state
       isLoading: false,
+      sortBy: 'NONE',
     };
 
     this.needsToSearchTopStories = this.needsToSearchTopStories.bind(this);
@@ -29,6 +38,11 @@ class App extends Component {
     this.onSearchChange = this.onSearchChange.bind(this);
     this.onSearchSubmit = this.onSearchSubmit.bind(this);
     this.onDismiss = this.onDismiss.bind(this);
+    this.onSort = this.onSort.bind(this);
+  }
+
+  onSort(sortKey) {
+    this.setState({ sortKey });
   }
 
   componentDidMount() {
@@ -109,7 +123,8 @@ class App extends Component {
       results,
       searchKey,
       error,
-      isLoading
+      isLoading,
+      sortKey
     } = this.state;
 
     const page = (
@@ -140,6 +155,8 @@ class App extends Component {
           </div>
           : <Table
             list={list}
+            sortKey={sortKey}
+            onSort={this.onSort}
             onDismiss={this.onDismiss}
           />
         }
@@ -208,9 +225,51 @@ const Search = ({
   );
 }
 
-const Table = ({ list, onDismiss }) =>
+const Table = ({
+  list,
+  sortKey,
+  onSort,
+  onDismiss
+}) =>
   <div className="table">
-    {list.map(item =>
+    <div className="table=header">
+      <span style={{ width: '40%' }}>
+        <Sort
+          sortKey={'TITLE'}
+          onSort={onSort}
+        >
+          Title
+        </Sort>
+      </span>
+      <span style={{ width: '30%' }}>
+        <Sort
+          sortKey={'AUTHOR'}
+          onSort={onSort}
+        >
+          Author
+        </Sort>
+      </span>
+      <span style={{ width: '10%'}}>
+        <Sort
+          sortKey={'COMMENTS'}
+          onSort={onSort}
+        >
+          Comments
+        </Sort>
+      </span>
+      <span style={{ width: '10%' }}>
+        <Sort
+          sortKey={'POINTS'}
+          onSort={onSort}
+        >
+          Points
+        </Sort>
+      </span>
+      <span style={{ width: '10%' }}>
+        Archive
+      </span>
+    </div>
+    {SORTS[sortKey](list).map(item =>
       <div key={item.objectID} className="table-row">
         <span style={{ width: '40%' }}>
           <a href={item.url}>{item.title}</a>
@@ -281,6 +340,11 @@ const withLoading = (Component) => ({ isLoading, ...rest }) =>
     : <Component { ...rest } />
 
 const ButtonWithLoading = withLoading(Button);
+
+const Sort = ({ sortKey, onSort, children }) =>
+  <Button onClick={() => onSort(sortKey)}>
+    {children}
+  </Button>
 
 export default App;
 
