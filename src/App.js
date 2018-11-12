@@ -248,33 +248,37 @@ const Table = ({
           <Sort
             sortKey={'TITLE'}
             onSort={onSort}
-            >
-              Title
-            </Sort>
+            activeSortKey={sortKey}
+          >
+            Title
+          </Sort>
         </span>
         <span style={{ width: '30%' }}>
           <Sort
             sortKey={'AUTHOR'}
             onSort={onSort}
-            >
-              Author
-            </Sort>
+            activeSortKey={sortKey}
+          >
+            Author
+          </Sort>
         </span>
         <span style={{ width: '10%'}}>
           <Sort
             sortKey={'COMMENTS'}
             onSort={onSort}
-            >
-              Comments
-            </Sort>
+            activeSortKey={sortKey}
+          >
+            Comments
+          </Sort>
         </span>
         <span style={{ width: '10%' }}>
           <Sort
             sortKey={'POINTS'}
             onSort={onSort}
-            >
-              Points
-            </Sort>
+            activeSortKey={sortKey}
+          >
+            Points
+          </Sort>
         </span>
         <span style={{ width: '10%' }}>
           Archive
@@ -354,13 +358,27 @@ const withLoading = (Component) => ({ isLoading, ...rest }) =>
 
 const ButtonWithLoading = withLoading(Button);
 
-const Sort = ({ sortKey, onSort, children }) =>
-  <Button
-    onClick={() => onSort(sortKey)}
-    className="button-inline"
-  >
-    {children}
-  </Button>
+const Sort = ({
+  sortKey,
+  activeSortKey,
+  onSort,
+  children
+}) => {
+  const sortClass = ['button-inline'];
+
+  if (sortKey == activeSortKey) {
+    sortClass.push('button-active');
+  }
+
+  return (
+    <Button
+      onClick={() => onSort(sortKey)}
+      className={sortClass.join(' ')}
+    >
+      {children}
+    </Button>
+  )
+}
 
 export default App;
 
